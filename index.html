@@ -33,9 +33,26 @@ canvas{display:block;flex:1;touch-action:none;}
 .colors{display:flex;gap:5px;justify-content:center;margin-bottom:4px;}
 .cdot{width:20px;height:20px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
 .cdot.active{border-color:var(--sand);transform:scale(1.1);}
+.onboard-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:100;display:flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:20px;}
+.onboard-overlay.hidden{display:none;}
+.onboard{background:#161b22;border:1px solid rgba(196,168,130,0.1);border-radius:16px;padding:24px 20px;max-width:380px;width:100%;max-height:85vh;overflow-y:auto;}
+.onboard h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#c4a882;letter-spacing:2px;text-align:center;margin-bottom:12px;}
+.onboard p{font-size:12px;line-height:1.6;color:#e6ddd0;opacity:0.85;margin-bottom:10px;}
+.onboard .hl{color:#c4a882;}
+.onboard .dismiss{display:block;margin:14px auto 0;background:rgba(196,168,130,0.1);border:1px solid rgba(196,168,130,0.25);color:#c4a882;padding:10px 32px;border-radius:12px;font-family:'Cormorant Garamond',serif;font-size:14px;cursor:pointer;letter-spacing:1px;}
 </style>
 </head>
 <body>
+<div class="onboard-overlay" id="onboard">
+  <div class="onboard">
+    <h2>Harmonograph</h2>
+    <p>A harmonograph is a 19th-century mechanical device that uses <span class="hl">two pendulums</span> to draw complex curves. One pendulum controls the X axis, the other controls Y. As they swing and slowly decay, the pen traces beautiful mathematical art.</p>
+    <p><span class="hl">Freq X & Y</span> control the ratio of the pendulums. Whole-number ratios (3:2, 5:4) create clean Lissajous figures. Irrational ratios create complex, never-repeating curves.</p>
+    <p><span class="hl">Phase</span> shifts the starting position. <span class="hl">Damping</span> controls how quickly the pendulums slow down. <span class="hl">Speed</span> controls drawing speed.</p>
+    <p>Try the presets: <span class="hl">Lissajous</span>, <span class="hl">Rose</span>, <span class="hl">Star</span>, <span class="hl">Butterfly</span>. Or tap <span class="hl">Random</span> for surprises. Every image is unique.</p>
+    <button class="dismiss" id="dismissOnboard">Start Drawing</button>
+  </div>
+</div>
 <div class="top" id="topBar"><span class="title">Harmonograph</span></div>
 <canvas id="c"></canvas>
 <div class="bottom" id="bottomBar">
@@ -182,6 +199,11 @@ canvas.addEventListener('click',()=>{if(immersed){immersed=false;topBar.classLis
 
 renderPresets();renderColors();syncSliders();
 ctx.fillStyle='#0d1117';ctx.fillRect(0,0,W,H);
+
+const onboard=document.getElementById('onboard');
+if(localStorage.getItem('harmono-onboarded')) onboard.classList.add('hidden');
+document.getElementById('dismissOnboard').addEventListener('click',()=>{onboard.classList.add('hidden');localStorage.setItem('harmono-onboarded','1');});
+
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
